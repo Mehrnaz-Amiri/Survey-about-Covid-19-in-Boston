@@ -1,0 +1,3014 @@
+---
+title: "Survey-NSF-Covid19-Nonresponse Weight Merged"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '3'
+  html_notebook:
+    toc: yes
+    toc_depth: 3
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+<style type="text/css">
+
+body{ /* Normal  */
+      font-size: 14px;
+  }
+td {  /* Table  */
+  font-size: 12px;
+}
+h1.title {
+  font-size: 18px;
+}
+h1 { /* Header 1 */
+  font-size: 18px;
+  color: DarkBlue;
+}
+h2 { /* Header 2 */
+    font-size: 16px;
+  color: DarkBlue;
+}
+}
+h3 { /* Header 3 */
+    font-size: 14px;
+  color: DarkBlue;
+}
+code.r{ /* Code block */
+    font-size: 12px;
+}
+pre { /* Code block - determines code spacing between lines */
+    font-size: 14px;
+}
+</style>
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+library(readxl)
+library(stargazer)
+library(ggplot2)
+library(dplyr)
+library(forcats)
+library(data.table)
+library(tmap)
+library(readxl)
+library(stargazer)
+library(ggplot2)
+library(dplyr)
+library(forcats)
+library(data.table)
+library(tmap)
+library(survey)
+final.nsf <- read_xlsx("~/Desktop/NSF Beacon CV-19 (final-15OCT2020) weighted (CSV).xlsx",
+                       col_types = c("text","numeric","text","numeric","numeric","numeric","numeric",
+                                            "numeric","numeric","numeric","numeric",                                           "numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric",
+                                     "numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","text","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","text","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric"))
+final.nsf <- replace(final.nsf, final.nsf == 9, NA)
+final.nsf$BNUName <- ifelse(final.nsf$BNUName == "Fenway", "Fenway/Kenmore", final.nsf$BNUName)
+```
+
+
+
+# Measuring behaviors
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nsf.new <- final.nsf
+
+### April ###
+
+nsf.new$Q7a.2 <- ifelse(nsf.new$Q7a == 1, 0, ifelse(nsf.new$Q7a == 2, 1.5, ifelse(nsf.new$Q7a == 3, 3.5, ifelse(nsf.new$Q7a == 4, 5.5,ifelse(nsf.new$Q7a == 5, 7, NA)))))
+
+nsf.new$Q7b.2 <- ifelse(nsf.new$Q7b == 1, 0, ifelse(nsf.new$Q7b == 2, 1.5, ifelse(nsf.new$Q7b == 3, 3.5, ifelse(nsf.new$Q7b == 4, 5.5,ifelse(nsf.new$Q7b == 5, 7, NA)))))
+
+nsf.new$Q7c.2 <- ifelse(nsf.new$Q7c == 1, 0, ifelse(nsf.new$Q7c == 2, 1.5, ifelse(nsf.new$Q7c == 3, 3.5, ifelse(nsf.new$Q7c == 4, 5.5,ifelse(nsf.new$Q7c == 5, 7, NA)))))
+
+nsf.new$Q7d.2 <- ifelse(nsf.new$Q7d == 1, 0, ifelse(nsf.new$Q7d == 2, 1.5, ifelse(nsf.new$Q7d == 3, 3.5, ifelse(nsf.new$Q7d == 4, 5.5,ifelse(nsf.new$Q7d == 5, 7, NA)))))
+
+nsf.new$Q7e.2 <- ifelse(nsf.new$Q7e == 1, 0, ifelse(nsf.new$Q7e == 2, 1.5, ifelse(nsf.new$Q7e == 3, 3.5, ifelse(nsf.new$Q7e == 4, 5.5,ifelse(nsf.new$Q7e == 5, 7, NA)))))
+
+nsf.new$Q7f.2 <- ifelse(nsf.new$Q7f == 1, 0, ifelse(nsf.new$Q7f == 2, 1.5, ifelse(nsf.new$Q7f == 3, 3.5, ifelse(nsf.new$Q7f == 4, 5.5,ifelse(nsf.new$Q7f == 5, 7, NA)))))
+
+nsf.new$Q7g.2 <- ifelse(nsf.new$Q7g == 1, 0, ifelse(nsf.new$Q7g == 2, 1.5, ifelse(nsf.new$Q7g == 3, 3.5, ifelse(nsf.new$Q7g == 4, 5.5,ifelse(nsf.new$Q7g == 5, 7, NA)))))
+
+nsf.new$Q7h.2 <- ifelse(nsf.new$Q7h == 1, 0, ifelse(nsf.new$Q7h == 2, 1.5, ifelse(nsf.new$Q7h == 3, 3.5, ifelse(nsf.new$Q7h == 4, 5.5,ifelse(nsf.new$Q7h == 5, 7, NA)))))
+
+nsf.new$Q7i.2 <- ifelse(nsf.new$Q7i == 1, 0, ifelse(nsf.new$Q7i == 2, 1.5, ifelse(nsf.new$Q7i == 3, 3.5, ifelse(nsf.new$Q7i == 4, 5.5,ifelse(nsf.new$Q7i == 5, 7, NA)))))
+
+nsf.new$Q7j.2 <- ifelse(nsf.new$Q7j == 1, 0, ifelse(nsf.new$Q7j == 2, 1.5, ifelse(nsf.new$Q7j == 3, 3.5, ifelse(nsf.new$Q7j == 4, 5.5,ifelse(nsf.new$Q7j == 5, 7, NA)))))
+
+### Summer ###
+
+nsf.new$Q15a.2 <- ifelse(nsf.new$Q15a == 1, 0, ifelse(nsf.new$Q15a == 2, 1.5, ifelse(nsf.new$Q15a == 3, 3.5, ifelse(nsf.new$Q15a == 4, 5.5,ifelse(nsf.new$Q15a == 5, 7, NA)))))
+
+nsf.new$Q15b.2 <- ifelse(nsf.new$Q15b == 1, 0, ifelse(nsf.new$Q15b == 2, 1.5, ifelse(nsf.new$Q15b == 3, 3.5, ifelse(nsf.new$Q15b == 4, 5.5,ifelse(nsf.new$Q15b == 5, 7, NA)))))
+
+nsf.new$Q15c.2 <- ifelse(nsf.new$Q15c == 1, 0, ifelse(nsf.new$Q15c == 2, 1.5, ifelse(nsf.new$Q15c == 3, 3.5, ifelse(nsf.new$Q15c == 4, 5.5,ifelse(nsf.new$Q15c == 5, 7, NA)))))
+
+nsf.new$Q15d.2 <- ifelse(nsf.new$Q15d == 1, 0, ifelse(nsf.new$Q15d == 2, 1.5, ifelse(nsf.new$Q15d == 3, 3.5, ifelse(nsf.new$Q15d == 4, 5.5,ifelse(nsf.new$Q15d == 5, 7, NA)))))
+
+nsf.new$Q15e.2 <- ifelse(nsf.new$Q15e == 1, 0, ifelse(nsf.new$Q15e == 2, 1.5, ifelse(nsf.new$Q15e == 3, 3.5, ifelse(nsf.new$Q15e == 4, 5.5,ifelse(nsf.new$Q15e == 5, 7, NA)))))
+
+nsf.new$Q15f.2 <- ifelse(nsf.new$Q15f == 1, 0, ifelse(nsf.new$Q15f == 2, 1.5, ifelse(nsf.new$Q15f == 3, 3.5, ifelse(nsf.new$Q15f == 4, 5.5,ifelse(nsf.new$Q15f == 5, 7, NA)))))
+
+nsf.new$Q15g.2 <- ifelse(nsf.new$Q15g == 1, 0, ifelse(nsf.new$Q15g == 2, 1.5, ifelse(nsf.new$Q15g == 3, 3.5, ifelse(nsf.new$Q15g == 4, 5.5,ifelse(nsf.new$Q15g == 5, 7, NA)))))
+
+nsf.new$Q15h.2 <- ifelse(nsf.new$Q15h == 1, 0, ifelse(nsf.new$Q15h == 2, 1.5, ifelse(nsf.new$Q15h == 3, 3.5, ifelse(nsf.new$Q15h == 4, 5.5,ifelse(nsf.new$Q15h == 5, 7, NA)))))
+
+nsf.new$Q15i.2 <- ifelse(nsf.new$Q15i == 1, 0, ifelse(nsf.new$Q15i == 2, 1.5, ifelse(nsf.new$Q15i == 3, 3.5, ifelse(nsf.new$Q15i == 4, 5.5,ifelse(nsf.new$Q15i == 5, 7, NA)))))
+
+nsf.new$Q15j.2 <- ifelse(nsf.new$Q15j == 1, 0, ifelse(nsf.new$Q15j == 2, 1.5, ifelse(nsf.new$Q15j == 3, 3.5, ifelse(nsf.new$Q15j == 4, 5.5,ifelse(nsf.new$Q15j == 5, 7, NA)))))
+
+
+```
+
+\
+
+
+# High-risk behaviors in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# High-risk behaviors: mean(7b,g,i,j)
+highrisk.df <- nsf.new[,c(129,134,136,137)]
+nsf.new$HighRisk <- round(apply(highrisk.df, 1, mean, na.rm=TRUE),2)
+
+mean.highrisk <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(HighRisk), funs(Wighted.mean_highrisk = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.highrisk <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(HighRisk), funs(Wighted.sd_highrisk = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+highrisk <- cbind(mean.highrisk,sd.highrisk)
+highrisk <- highrisk[,-3]
+```
+
+\
+
+
+## Plot for High-risk behaviors in April (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+highrisk %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_highrisk,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_highrisk,2))) +
+  geom_bar(stat="identity", fill="bisque4") + ylab('High-risk behaviors in April') +
+  theme_bw() + ggtitle("High-risk behaviors for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for High-risk behaviors in April (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+highrisk %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_highrisk,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_highrisk,2))) +
+  geom_bar(stat="identity", fill="navy") + ylab('High-risk behaviors in April') +
+  theme_bw() + ggtitle("High-risk behaviors for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for High-risk behaviors in April
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+library(sf)
+# Shapefile of neighborhoods in Boston
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+highrisk.map <- merge(nbhd_geo, highrisk, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(highrisk.map) + tm_polygons(c('Wighted.mean_highrisk', 'Wighted.sd_highrisk'), palette=list("Reds","Blues"), style = "cont", title = c("Mean High risk behaviors in April", "sd High risk behaviors in April")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+\
+
+
+
+## Faceted histograms by neighborhood (weighted) - High-risk behaviors in April - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+
+ggplot(nsf.new, aes(x = HighRisk, weights= MERNRWGT)) + geom_histogram(binwidth = 0.3) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('High-risk behaviors in April') +
+  ggtitle("Faceted histograms by neighborhood")
+ 
+
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - High-risk behaviors in April - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(nsf.new, aes(x = HighRisk, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() + ylab("Proportion") +
+  facet_wrap(~ BNUName) + xlab('High-risk behaviors in April') +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+ 
+
+```
+
+
+\
+
+## Correlation between means and sds for High-risk behaviors in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.highrisk <- round(cor(highrisk$Wighted.mean_highrisk, highrisk$Wighted.sd_highrisk),2)
+print(sprintf("The correlation between means and sds for High-risk behaviors in April is: %s", cor.highrisk))
+```
+
+
+
+\
+
+## Anova for High-risk behaviors in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.highrisk <- aov(HighRisk ~ BNUName, data = nsf.new)
+summary(anova.highrisk)
+```
+
+\
+
+## Anova for High-risk behaviors in April with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.highrisk2 <- lm(HighRisk ~ BNUName, data = nsf.new, weights = MERNRWGT)
+anova(anova.highrisk2)
+```
+
+
+
+\
+
+
+# High-risk behaviors in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# High-risk behaviors: mean(15b,g,i,j)
+highrisk.df2 <- nsf.new[,c(139,144,146,147)]
+nsf.new$HighRisk2 <- round(apply(highrisk.df2, 1, mean, na.rm=TRUE),2)
+
+mean.highrisk2 <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(HighRisk2), funs(Wighted.mean_highrisk = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.highrisk2 <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(HighRisk2), funs(Wighted.sd_highrisk = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+highrisk2 <- cbind(mean.highrisk2,sd.highrisk2)
+highrisk2 <- highrisk2[,-3]
+```
+
+\
+
+
+## Plot for High-risk behaviors in Summer (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+highrisk2 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_highrisk,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_highrisk,2))) +
+  geom_bar(stat="identity", fill="bisque4") + ylab('High-risk behaviors in Summer') +
+  theme_bw() + ggtitle("High-risk behaviors for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for High-risk behaviors in Summer (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+highrisk2 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_highrisk,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_highrisk,2))) +
+  geom_bar(stat="identity", fill="navy") + ylab('High-risk behaviors in Summer') +
+  theme_bw() + ggtitle("High-risk behaviors for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for High-risk behaviors in Summer
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+library(sf)
+# Shapefile of neighborhoods in Boston
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+highrisk.map2 <- merge(nbhd_geo, highrisk2, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(highrisk.map2) + tm_polygons(c('Wighted.mean_highrisk', 'Wighted.sd_highrisk'), palette=list("Reds","Blues"), style = "cont", title = c("Mean High risk behaviors in Summer", "sd High risk behaviors in Summer")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+\
+
+
+
+## Faceted histograms by neighborhood (weighted) - High-risk behaviors in Summer - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+
+ggplot(nsf.new, aes(x = HighRisk2, weights= MERNRWGT)) + geom_histogram(binwidth = 0.3) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('High-risk behaviors in Summer') +
+  ggtitle("Faceted histograms by neighborhood")
+ 
+
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - High-risk behaviors in Summer - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(nsf.new, aes(x = HighRisk2, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() + ylab("Proportion") +
+  facet_wrap(~ BNUName) + xlab('High-risk behaviors in Summer') +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+ 
+
+```
+
+
+\
+
+## Correlation between means and sds for High-risk behaviors in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.highrisk2 <- round(cor(highrisk2$Wighted.mean_highrisk, highrisk2$Wighted.sd_highrisk),2)
+print(sprintf("The correlation between means and sds for High-risk behaviors in Summer is: %s", cor.highrisk2))
+```
+
+
+
+\
+
+## Anova for High-risk behaviors in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.highrisk.sum <- aov(HighRisk2 ~ BNUName, data = nsf.new)
+summary(anova.highrisk.sum)
+```
+
+\
+
+## Anova for High-risk behaviors in Summer with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.highrisk2.sum <- lm(HighRisk2 ~ BNUName, data = nsf.new, weights = MERNRWGT)
+anova(anova.highrisk2.sum)
+```
+
+
+
+\
+
+
+# Protective in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# Protective: sum(7e,f)
+protective.df <- nsf.new[,c(132,133)]
+nsf.new$Protective <- round(apply(protective.df, 1, sum, na.rm=TRUE),2)
+
+mean.protective <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Protective), funs(Wighted.mean_protective = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.protective <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Protective), funs(Wighted.sd_protective = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+protective <- cbind(mean.protective,sd.protective)
+protective <- protective[,-3]
+```
+
+\
+
+
+## Plot for Protective in April (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+protective %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_protective,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_protective,2))) +
+  geom_bar(stat="identity", fill="orange") + ylab('Protective in April') +
+  theme_bw() + ggtitle("Protective for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for Protective in April (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+protective %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_protective,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_protective,2))) +
+  geom_bar(stat="identity", fill="blue") + ylab('Protective in April') +
+  theme_bw() + ggtitle("Protective for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Protective in April
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+library(sf)
+# Shapefile of neighborhoods in Boston
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+protective.map <- merge(nbhd_geo, protective, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(protective.map) + tm_polygons(c('Wighted.mean_protective', 'Wighted.sd_protective'), palette=list("Purples","Greens"), style = "cont", title = c("Mean Protective in April", "sd Protective in April")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+\
+
+
+
+## Faceted histograms by neighborhood (weighted) - Protective in April - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+
+ggplot(nsf.new, aes(x = Protective, weights= MERNRWGT)) + geom_histogram(binwidth = 0.8) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Protective in April') +
+  ggtitle("Faceted histograms by neighborhood")
+ 
+
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Protective in April - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(nsf.new, aes(x = Protective, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() + ylab("Proportion") +
+  facet_wrap(~ BNUName) + xlab('Protective in April') +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+ 
+
+```
+
+
+
+\
+
+## Correlation between means and sds for Protective in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.protective <- round(cor(protective$Wighted.mean_protective, protective$Wighted.sd_protective),2)
+print(sprintf("The correlation between means and sds for Protective in April is: %s", cor.protective))
+```
+
+
+\
+
+## Anova for Protective in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.protective <- aov(Protective ~ BNUName, data = nsf.new)
+summary(anova.protective)
+```
+
+\
+
+## Anova for Protective in April with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.protective2 <- lm(Protective ~ BNUName, data = nsf.new, weights = MERNRWGT)
+anova(anova.protective2)
+```
+
+
+\
+
+
+# Protective in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# Protective: sum(15e,f)
+protective.df2 <- nsf.new[,c(142,143)]
+nsf.new$Protective2 <- round(apply(protective.df2, 1, sum, na.rm=TRUE),2)
+
+mean.protective2 <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Protective2), funs(Wighted.mean_protective = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.protective2 <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Protective2), funs(Wighted.sd_protective = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+protective2 <- cbind(mean.protective2,sd.protective2)
+protective2 <- protective2[,-3]
+```
+
+\
+
+
+## Plot for Protective in Summer (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+protective2 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_protective,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_protective,2))) +
+  geom_bar(stat="identity", fill="orange") + ylab('Protective in Summer') +
+  theme_bw() + ggtitle("Protective for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for Protective in Summer (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+protective2 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_protective,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_protective,2))) +
+  geom_bar(stat="identity", fill="blue") + ylab('Protective in Summer') +
+  theme_bw() + ggtitle("Protective for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Protective in Summer
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+library(sf)
+# Shapefile of neighborhoods in Boston
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+protective.map2 <- merge(nbhd_geo, protective2, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(protective.map2) + tm_polygons(c('Wighted.mean_protective', 'Wighted.sd_protective'), palette=list("Purples","Greens"), style = "cont", title = c("Mean Protective in Summer", "sd Protective in Summer")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+\
+
+
+
+## Faceted histograms by neighborhood (weighted) - Protective in Summer - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+
+ggplot(nsf.new, aes(x = Protective2, weights= MERNRWGT)) + geom_histogram(binwidth = 0.8) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Protective in Summer') +
+  ggtitle("Faceted histograms by neighborhood")
+ 
+
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Protective in Summer - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(nsf.new, aes(x = Protective2, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() + ylab("Proportion") +
+  facet_wrap(~ BNUName) + xlab('Protective in Summer') +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+ 
+
+```
+
+
+
+\
+
+## Correlation between means and sds for Protective in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.protective2 <- round(cor(protective2$Wighted.mean_protective, protective2$Wighted.sd_protective),2)
+print(sprintf("The correlation between means and sds for Protective in Summer is: %s", cor.protective2))
+```
+
+
+\
+
+## Anova for Protective in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.protective.sum <- aov(Protective2 ~ BNUName, data = nsf.new)
+summary(anova.protective.sum)
+```
+
+\
+
+## Anova for Protective in Summer with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.protective2.sum <- lm(Protective2 ~ BNUName, data = nsf.new, weights = MERNRWGT)
+anova(anova.protective2.sum)
+```
+\
+
+
+
+# Food in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# Food: sum(7c,d)
+food.df <- nsf.new[,c(130,131)]
+nsf.new$Food <- round(apply(food.df, 1, sum, na.rm=TRUE),2)
+
+mean.food <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Food), funs(Wighted.mean_food = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.food <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Food), funs(Wighted.sd_food = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+food <- cbind(mean.food,sd.food)
+food <- food[,-3]
+```
+
+\
+
+
+## Plot for Food in April (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+food %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_food,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_food,2))) +
+  geom_bar(stat="identity", fill="darkcyan") + ylab('Food in April') +
+  theme_bw() + ggtitle("Food for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for Foodin April (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+food %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_food,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_food,2))) +
+  geom_bar(stat="identity", fill="darkolivegreen4") + ylab('Food in April') +
+  theme_bw() + ggtitle("Food for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Food in April
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+library(sf)
+# Shapefile of neighborhoods in Boston
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+food.map <- merge(nbhd_geo, food, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(food.map) + tm_polygons(c('Wighted.mean_food', 'Wighted.sd_food'), palette=list("Reds","Greens"), style = "cont", title = c("Mean Food in April", "sd Food in April")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+\
+
+
+## Faceted histograms by neighborhood (weighted) - Food in April - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+
+ggplot(nsf.new, aes(x = Food, weights= MERNRWGT)) + geom_histogram(binwidth = 0.8) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Food in April') +
+  ggtitle("Faceted histograms by neighborhood")
+ 
+
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Food in April - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(nsf.new, aes(x = Food, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() + ylab("Proportion") +
+  facet_wrap(~ BNUName) + xlab('Food in April') +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+```
+
+
+
+\
+
+## Correlation between means and sds for Food in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.food <- round(cor(food$Wighted.mean_food, food$Wighted.sd_food),2)
+print(sprintf("The correlation between means and sds for Food in April is: %s", cor.food))
+```
+
+
+\
+
+## Anova for Food in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.food <- aov(Food ~ BNUName, data = nsf.new)
+summary(anova.food)
+```
+
+\
+
+## Anova for Food in April with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.food2 <- lm(Food ~ BNUName, data = nsf.new, weights = MERNRWGT)
+anova(anova.food2)
+```
+
+
+
+
+
+
+# Food in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# Food: sum(15c,d)
+food.df2 <- nsf.new[,c(140,141)]
+nsf.new$Food2 <- round(apply(food.df2, 1, sum, na.rm=TRUE),2)
+
+mean.food2 <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Food2), funs(Wighted.mean_food = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.food2 <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Food2), funs(Wighted.sd_food = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+food2 <- cbind(mean.food2,sd.food2)
+food2 <- food2[,-3]
+```
+
+\
+
+
+## Plot for Food in Summer (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+food2 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_food,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_food,2))) +
+  geom_bar(stat="identity", fill="darkcyan") + ylab('Food in Summer') +
+  theme_bw() + ggtitle("Food for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for Food in Summer (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+food2 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_food,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_food,2))) +
+  geom_bar(stat="identity", fill="darkolivegreen4") + ylab('Food in Summer') +
+  theme_bw() + ggtitle("Food for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Food in Summer
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+library(sf)
+# Shapefile of neighborhoods in Boston
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+food.map2 <- merge(nbhd_geo, food2, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(food.map2) + tm_polygons(c('Wighted.mean_food', 'Wighted.sd_food'), palette=list("Reds","Greens"), style = "cont", title = c("Mean Food in Summer", "sd Food in Summer")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+\
+
+
+## Faceted histograms by neighborhood (weighted) - Food in Summer - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+
+ggplot(nsf.new, aes(x = Food2, weights= MERNRWGT)) + geom_histogram(binwidth = 0.8) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Food in Summer') +
+  ggtitle("Faceted histograms by neighborhood")
+ 
+
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Food in Summer - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(nsf.new, aes(x = Food2, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() + ylab("Proportion") +
+  facet_wrap(~ BNUName) + xlab('Food in Summer') +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+```
+
+
+
+\
+
+## Correlation between means and sds for Food in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.food2 <- round(cor(food2$Wighted.mean_food, food2$Wighted.sd_food),2)
+print(sprintf("The correlation between means and sds for Food in Summer is: %s", cor.food2))
+```
+
+
+\
+
+## Anova for Food in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.food.sum <- aov(Food2 ~ BNUName, data = nsf.new)
+summary(anova.food.sum)
+```
+
+\
+
+## Anova for Food in Summer with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.food2.sum <- lm(Food2 ~ BNUName, data = nsf.new, weights = MERNRWGT)
+anova(anova.food2.sum)
+```
+
+
+
+\
+
+
+
+# Transit
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# Transit: 7/15a (stand-alone that we want to analyze)
+mean.transit <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Q7a.2, Q15a.2), funs(Wighted.mean_transit = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.transit <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Q7a.2, Q15a.2), funs(Wighted.sd_transit = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+transit <- cbind(mean.transit,sd.transit)
+transit <- transit[,-4]
+names(transit)[2] <- 'Transit.April.mean' 
+names(transit)[3] <- 'Transit.Summer.mean'
+names(transit)[4] <- 'Transit.April.sd' 
+names(transit)[5] <- 'Transit.Summer.sd'
+```
+
+
+\
+
+
+## Plot for Transit (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+transit.1 <- melt(transit[,c(1,2,3)]) 
+transit.1 %>%
+  ggplot(aes(x=BNUName, y=value, fill=variable)) +
+  geom_bar(stat="identity", position=position_dodge()) + ylab('Transit') +
+  theme_bw() + ggtitle("Transit for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) +
+  scale_fill_brewer(palette="Reds") + labs(fill='Transit')
+```
+
+
+## Plot for Transit (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+transit.2 <- melt(transit[,c(1,4,5)]) 
+transit.2 %>%
+  ggplot(aes(x=BNUName, y=value, fill=variable)) +
+  geom_bar(stat="identity", position=position_dodge()) + ylab('Transit') +
+  theme_bw() + ggtitle("Transit for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8))  + labs(fill='Transit')
+```
+
+
+\
+
+
+## Maps for Transit 
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+library(sf)
+# Shapefile of neighborhoods in Boston
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+transit.map <- merge(nbhd_geo, transit, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(transit.map) + tm_polygons(c('Transit.April.mean','Transit.Summer.mean','Transit.April.sd','Transit.Summer.sd'), palette=list("Reds","Greens","Blues","Purples"), style = "cont") + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+\
+
+
+
+## Faceted histograms by neighborhood (weighted) - Transit in April and Summer - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+ggplot(nsf.new, aes(x = Q7a.2, weights= MERNRWGT)) + geom_histogram(binwidth = 0.8) + theme_bw() +
+  facet_wrap(~ BNUName) + scale_x_continuous("Transit in April", breaks = c(0,1.5, 3.5, 5.5,7)) +
+  ggtitle("Faceted histograms by neighborhood")
+
+ggplot(nsf.new, aes(x = Q15a.2, weights= MERNRWGT)) + geom_histogram(binwidth = 0.8) + theme_bw() +
+  facet_wrap(~ BNUName) + scale_x_continuous("Transit in Summer", breaks = c(0,1.5, 3.5, 5.5,7)) +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Transit in April and Summer - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(nsf.new, aes(x = Q7a.2, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() + ylab("Proportion") +
+  facet_wrap(~ BNUName) + scale_x_continuous("Transit in April", breaks = c(0,1.5, 3.5, 5.5,7)) +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+ggplot(nsf.new, aes(x = Q15a.2), weights= MERNRWGT) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() + ylab("Proportion") +
+  facet_wrap(~ BNUName) + scale_x_continuous("Transit in Summer", breaks = c(0,1.5, 3.5, 5.5,7)) +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+```
+
+\
+
+## Correlation between means and sds for Transit in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.transit.april <- round(cor(transit$Transit.April.mean, transit$Transit.April.sd),2)
+print(sprintf("The correlation between means and sds for Transit in April is: %s", cor.transit.april))
+```
+
+\
+
+## Correlation between means and sds for Transit in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.transit.summer <- round(cor(transit$Transit.Summer.mean, transit$Transit.Summer.sd),2)
+print(sprintf("The correlation between means and sds for Transit in Summer is: %s", cor.transit.summer))
+```
+
+\
+
+## Anova for Transit in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.transit.april <- aov(Q7a.2 ~ BNUName, data = nsf.new)
+summary(anova.transit.april)
+```
+
+\
+
+## Anova for Transit in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.transit.summer <- aov(Q15a.2 ~ BNUName, data = nsf.new)
+summary(anova.transit.summer)
+```
+
+
+
+
+\
+
+## Anova for Transit in April with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.transit.april.2 <- lm(Q7a.2 ~ BNUName, data = nsf.new, weights = MERNRWGT)
+anova(anova.transit.april.2)
+```
+
+
+\
+
+
+## Anova for Transit in Summer with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.transit.summer.2 <- lm(Q15a.2 ~ BNUName, data = nsf.new, weights = MERNRWGT)
+anova(anova.transit.summer.2)
+```
+
+
+
+\
+
+
+
+# Exercise
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# Exercise: 7/15h (stand-alone)
+# exercise.df <- nsf.new[,c(137,147)]
+
+mean.exercise <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Q7h.2, Q15h.2), funs(Wighted.mean_exercise = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.exercise <- nsf.new %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(Q7h.2, Q15h.2), funs(Wighted.sd_exercise = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+exercise <- cbind(mean.exercise,sd.exercise)
+exercise <- exercise[,-4]
+names(exercise)[2] <- 'Exercise.April.mean' 
+names(exercise)[3] <- 'Exercise.Summer.mean'
+names(exercise)[4] <- 'Exercise.April.sd' 
+names(exercise)[5] <- 'Exercise.Summer.sd'
+```
+
+
+\
+
+
+## Plot for Exercise (Wighted mean)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+exercise.1 <- melt(exercise[,c(1,2,3)]) 
+exercise.1 %>%
+  ggplot(aes(x=BNUName, y=value, fill=variable)) +
+  geom_bar(stat="identity", position=position_dodge()) + ylab('Exercise') +
+  theme_bw() + ggtitle("Exercise for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) +
+  scale_fill_brewer(palette="Blues") + labs(fill='Exercise')
+```
+
+
+## Plot for Exercise (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+exercise.2 <- melt(exercise[,c(1,4,5)]) 
+exercise.2 %>%
+  ggplot(aes(x=BNUName, y=value, fill=variable)) +
+  geom_bar(stat="identity", position=position_dodge()) + ylab('Exercise') +
+  theme_bw() + ggtitle("Exercise for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8))  + labs(fill='Exercise') +
+  scale_fill_brewer(palette="Greens")
+```
+
+
+\
+
+
+## Maps for Exercise 
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+library(sf)
+# Shapefile of neighborhoods in Boston
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+exercise.map <- merge(nbhd_geo, exercise, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(exercise.map) + tm_polygons(c('Exercise.April.mean','Exercise.Summer.mean','Exercise.April.sd','Exercise.Summer.sd'), palette=list("Reds","Greens","Blues","Purples"), style = "cont") + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+\
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Exercise in April and Summer - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+ggplot(nsf.new, aes(x = Q7h.2, weights= MERNRWGT)) + geom_histogram(binwidth = 0.8) + theme_bw() +
+  facet_wrap(~ BNUName) + scale_x_continuous("Exercise in April", breaks = c(0,1.5, 3.5, 5.5,7)) +
+  ggtitle("Faceted histograms by neighborhood")
+
+ggplot(nsf.new, aes(x = Q15h.2, weights= MERNRWGT)) + geom_histogram(binwidth = 0.8) + theme_bw() +
+  facet_wrap(~ BNUName) + scale_x_continuous("Exercise in Summer", breaks = c(0,1.5, 3.5, 5.5,7)) +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Exercise in April and Summer - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(nsf.new, aes(x = Q7h.2, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() + ylab("Proportion") +
+  facet_wrap(~ BNUName) + scale_x_continuous("Exercise in April", breaks = c(0,1.5, 3.5, 5.5,7)) +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+ggplot(nsf.new, aes(x = Q15h.2), weights= MERNRWGT) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() + ylab("Proportion") +
+  facet_wrap(~ BNUName) + scale_x_continuous("Exercise in Summer", breaks = c(0,1.5, 3.5, 5.5,7)) +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+```
+
+
+\
+
+## Correlation between means and sds for Exercise in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.exercise.april <- round(cor(exercise$Exercise.April.mean, exercise$Exercise.April.sd),2)
+print(sprintf("The correlation between means and sds for Exercise in April is: %s", cor.exercise.april))
+```
+
+\
+
+## Correlation between means and sds for Exercise in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.exercise.summer <- round(cor(exercise$Exercise.Summer.mean, exercise$Exercise.Summer.sd),2)
+print(sprintf("The correlation between means and sds for Exercise in Summer is: %s", cor.exercise.summer))
+```
+
+\
+
+## Anova for Exercise in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.exercise.april <- aov(Q7h.2 ~ BNUName, data = nsf.new)
+summary(anova.exercise.april)
+```
+
+\
+
+## Anova for Exercise in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.exercise.summer <- aov(Q15h.2 ~ BNUName, data = nsf.new)
+summary(anova.exercise.summer)
+```
+
+
+
+
+\
+
+## Anova for Exercise in April with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.exercise.april.2 <- lm(Q7h.2 ~ BNUName, data = nsf.new, weights = MERNRWGT)
+anova(anova.exercise.april.2)
+```
+
+
+\
+
+
+## Anova for Exercise in Summer with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.exercise.summer.2 <- lm(Q15h.2 ~ BNUName, data = nsf.new, weights = MERNRWGT)
+anova(anova.exercise.summer.2)
+```
+
+
+\
+
+
+
+# Factor1: High Risk Exposures, April
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# RBEH_APR1
+mean.RBEH_APR1 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_APR1), funs(Wighted.mean_APR1 = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+
+sd.RBEH_APR1 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_APR1), funs(Wighted.sd_APR1 = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+RBEH_APR1 <- cbind(mean.RBEH_APR1,sd.RBEH_APR1)
+RBEH_APR1 <- RBEH_APR1[,-3]
+```
+
+
+
+## Plot for Factor1: High Risk Exposures, April (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR1 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_APR1,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_APR1,2))) +
+  geom_bar(stat="identity", fill="bisque4") + ylab('Factor1: High Risk Exposures, April (mean)') +
+  theme_bw() + ggtitle("Factor1: High Risk Exposures, April for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for Factor1: High Risk Exposures, April (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR1 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_APR1,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_APR1,2))) +
+  geom_bar(stat="identity", fill="navy") + ylab('Factor1: High Risk Exposures, April (sd)') +
+  theme_bw() + ggtitle("Factor1: High Risk Exposures, April for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Factor1: High Risk Exposures, April
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+library(sf)
+# Shapefile of neighborhoods in Boston
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR1.map <- merge(nbhd_geo, RBEH_APR1, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(RBEH_APR1.map) + tm_polygons(c('Wighted.mean_APR1', 'Wighted.sd_APR1'), palette=list("Reds","Blues"), style = "cont", title = c("Mean High Risk April", "sd High Risk April")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+\
+
+
+
+## Faceted histograms by neighborhood (weighted) - Factor1: High Risk Exposures, April - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = RBEH_APR1, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor1: High Risk Exposures, April') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+
+\
+
+
+## Faceted histograms by neighborhood (weighted) - Factor1: High Risk Exposures, April - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+
+ggplot(final.nsf, aes(x = RBEH_APR1, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor1: High Risk Exposures, April') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+
+
+
+\
+
+## Correlation between means and sds for Factor1: High Risk Exposures, April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.RBEH_APR1 <- round(cor(RBEH_APR1$Wighted.mean_APR1, RBEH_APR1$Wighted.sd_APR1),2)
+print(sprintf("The correlation between means and sds for Factor1: High Risk Exposures, April is: %s", cor.RBEH_APR1))
+```
+
+
+\
+
+## Anova for Factor1: High Risk Exposures, April without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_APR1 <- aov(RBEH_APR1 ~ BNUName, data = final.nsf)
+summary(anova.RBEH_APR1)
+```
+
+\
+
+## Anova for Factor1: High Risk Exposures, April with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_APR1.2 <- lm(RBEH_APR1 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.RBEH_APR1.2)
+```
+
+
+\
+
+
+# Factor2: Food & Trolley, April
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# RBEH_APR2
+mean.RBEH_APR2 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_APR2), funs(Wighted.mean_APR2 = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+
+sd.RBEH_APR2 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_APR2), funs(Wighted.sd_APR2 = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+RBEH_APR2 <- cbind(mean.RBEH_APR2,sd.RBEH_APR2)
+RBEH_APR2 <- RBEH_APR2[,-3]
+```
+
+
+
+## Plot for Factor2: Food & Trolley, April (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR2 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_APR2,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_APR2,2))) +
+  geom_bar(stat="identity", fill="darkgoldenrod4") + ylab('Factor2: Food & Trolley, April (mean)') +
+  theme_bw() + ggtitle("Factor2: Food & Trolley, April for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for Factor2: Food & Trolley, April (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR2 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_APR2,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_APR2,2))) +
+  geom_bar(stat="identity", fill="cornsilk4") + ylab('Factor2: Food & Trolley, April (sd)') +
+  theme_bw() + ggtitle("Factor2: Food & Trolley, April for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Factor2: Food & Trolley, April
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR2.map <- merge(nbhd_geo, RBEH_APR2, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(RBEH_APR2.map) + tm_polygons(c('Wighted.mean_APR2', 'Wighted.sd_APR2'), palette=list("Oranges","Greens"), style = "cont", title = c("Mean Food & Trolley April", "sd Food & Trolley April")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+\
+
+
+
+## Faceted histograms by neighborhood (weighted) - Factor2: Food & Trolley, April - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+
+ggplot(final.nsf, aes(x = RBEH_APR2, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor2: Food & Trolley, April') + 
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+
+\
+
+
+## Faceted histograms by neighborhood (weighted) - Factor2: Food & Trolley, April - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = RBEH_APR2, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..))) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor2: Food & Trolley, April') + ylab("Proportion") +
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+```
+
+
+
+\
+
+## Correlation between means and sds for Factor2: Food & Trolley, April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.RBEH_APR2 <- round(cor(RBEH_APR2$Wighted.mean_APR2, RBEH_APR2$Wighted.sd_APR2),2)
+print(sprintf("The correlation between means and sds for Factor2: Food & Trolley, April is: %s", cor.RBEH_APR2))
+```
+
+
+\
+
+## Anova for Factor2: Food & Trolley, April without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_APR2 <- aov(RBEH_APR2 ~ BNUName, data = final.nsf)
+summary(anova.RBEH_APR2)
+```
+
+\
+
+## Anova for Factor2: Food & Trolley, April with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_APR2.2 <- lm(RBEH_APR2 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.RBEH_APR2.2)
+```
+
+
+
+
+\
+
+# Factor3: Ordered Food & Groceries, April
+\
+
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# RBEH_APR4
+mean.RBEH_APR3 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_APR4), funs(Wighted.mean_APR3 = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+
+sd.RBEH_APR3 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_APR4), funs(Wighted.sd_APR3 = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+RBEH_APR3 <- cbind(mean.RBEH_APR3,sd.RBEH_APR3)
+RBEH_APR3 <- RBEH_APR3[,-3]
+```
+
+\
+
+## Plot for Factor3: Ordered Food & Groceries, April (Wighted mean)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR3 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_APR3,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_APR3,2))) +
+  geom_bar(stat="identity", fill="darkslategray") + ylab('Factor3: Ordered Food & Groceries, April (mean)') +
+  theme_bw() + ggtitle("Factor3: Ordered Food & Groceries, April for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+\
+
+
+## Plot for Factor3: Ordered Food & Groceries, April (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR3 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_APR3,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_APR3,2))) +
+  geom_bar(stat="identity", fill="ivory4") + ylab('Factor3: Ordered Food & Groceries, April (sd)') +
+  theme_bw() + ggtitle("Factor3: Ordered Food & Groceries, April for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps Factor3: Ordered Food & Groceries, April
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR3.map <- merge(nbhd_geo, RBEH_APR3, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+tmap_mode('view')
+tm_shape(RBEH_APR3.map) + tm_polygons(c('Wighted.mean_APR3', 'Wighted.sd_APR3'), palette=list("Oranges","Greens"), style = "cont", title = c("Mean Food & Groceries April", "sd Food & Groceries April")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+\
+
+
+## Faceted histograms by neighborhood (weighted) - Factor3: Ordered Food & Groceries, April - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = RBEH_APR4, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor3: Ordered Food & Groceries, April') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+
+\
+
+
+
+## Faceted histograms by neighborhood (weighted) - Factor3: Ordered Food & Groceries, April - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+library(ggplot2)
+
+ggplot(final.nsf, aes(x = RBEH_APR4, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor3: Ordered Food & Groceries, April') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+
+
+\
+
+## Correlation between means and sds for Factor3: Ordered Food & Groceries, April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.RBEH_APR3 <- round(cor(RBEH_APR3$Wighted.mean_APR3, RBEH_APR3$Wighted.sd_APR3),2)
+print(sprintf("The correlation between means and sds for Factor3: Ordered Food & Groceries, April is: %s", cor.RBEH_APR3))
+```
+
+
+\
+
+## Anova for Factor3: Ordered Food & Groceries, April without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_APR3 <- aov(RBEH_APR4 ~ BNUName, data = final.nsf)
+summary(anova.RBEH_APR3)
+```
+
+\
+
+## Anova for Factor3: Ordered Food & Groceries, April with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_APR3 <- lm(RBEH_APR4 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.RBEH_APR3)
+```
+
+\
+
+
+
+
+# Factor4: Exercise & Got Groceries, April
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# RBEH_APR4
+mean.RBEH_APR4 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_APR3), funs(Wighted.mean_APR4 = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+
+sd.RBEH_APR4 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_APR3), funs(Wighted.sd_APR4 = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+RBEH_APR4 <- cbind(mean.RBEH_APR4,sd.RBEH_APR4)
+RBEH_APR4 <- RBEH_APR4[,-3]
+```
+
+
+
+## Plot for Factor4: Exercise & Got Groceries, April (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR4 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_APR4,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_APR4,2))) +
+  geom_bar(stat="identity", fill="deeppink4") + ylab('Factor4: Exercise & Got Groceries, April (mean)') +
+  theme_bw() + ggtitle("Factor4: Exercise & Got Groceries, April for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for Factor4: Exercise & Got Groceries, April (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR4 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_APR4,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_APR4,2))) +
+  geom_bar(stat="identity", fill="lavenderblush4") + ylab('Factor4: Exercise & Got Groceries, April (sd)') + theme_bw() + ggtitle("Factor4: Exercise & Got Groceries, April for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Factor4: Exercise & Got Groceries, April
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_APR4.map <- merge(nbhd_geo, RBEH_APR4, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+tmap_mode('view')
+tm_shape(RBEH_APR4.map) + tm_polygons(c('Wighted.mean_APR4', 'Wighted.sd_APR4'), palette=list("Reds","Greens"), style = "cont", title = c("Mean Exercise & Got Groceries April", "sd Exercise & Got Groceries April")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Factor4: Exercise & Got Groceries, April - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = RBEH_APR3, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor4: Exercise & Got Groceries, April') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+
+
+\
+
+
+## Faceted histograms by neighborhood (weighted) - Factor4: Exercise & Got Groceries, April - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(final.nsf, aes(x = RBEH_APR3, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor4: Exercise & Got Groceries, April') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+
+
+\
+
+
+## Correlation between means and sds for Factor4: Exercise & Got Groceries, April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.RBEH_APR4 <- round(cor(RBEH_APR4$Wighted.mean_APR4, RBEH_APR4$Wighted.sd_APR4),2)
+print(sprintf("The correlation between means and sds for Factor4: Exercise & Got Groceries, April is: %s", cor.RBEH_APR4))
+```
+
+
+\
+
+## Anova for Factor4: Exercise & Got Groceries, April without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_APR4 <- aov(RBEH_APR3 ~ BNUName, data = final.nsf)
+summary(anova.RBEH_APR4)
+```
+
+\
+
+## Anova for Factor4: Exercise & Got Groceries, April with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_APR4 <- lm(RBEH_APR3 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.RBEH_APR4)
+```
+
+
+\
+
+
+# Factor1: High Risk Exposures, Summer
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# RBEH_SMR1
+mean.RBEH_SMR1 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_SMR1), funs(Wighted.mean_SMR1 = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+
+sd.RBEH_SMR1 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_SMR1), funs(Wighted.sd_SMR1 = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+RBEH_SMR1 <- cbind(mean.RBEH_SMR1,sd.RBEH_SMR1)
+RBEH_SMR1 <- RBEH_SMR1[,-3]
+```
+\
+
+
+## Plot for Factor1: High Risk Exposures, Summer (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR1 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_SMR1,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_SMR1,2))) +
+  geom_bar(stat="identity", fill="bisque4") + ylab('Factor1: High Risk Exposures, Summer (mean)') +
+  theme_bw() + ggtitle("Factor1: High Risk Exposures, Summer for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+\
+
+
+## Plot for Factor1: High Risk Exposures, Summer (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR1 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_SMR1,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_SMR1,2))) +
+  geom_bar(stat="identity", fill="navy") + ylab('Factor1: High Risk Exposures, Summer (sd)') +
+  theme_bw() + ggtitle("Factor1: High Risk Exposures, Summer for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Factor1: High Risk Exposures Summer
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR1.map <- merge(nbhd_geo, RBEH_SMR1, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+tmap_mode('view')
+tm_shape(RBEH_SMR1.map) + tm_polygons(c('Wighted.mean_SMR1', 'Wighted.sd_SMR1'), palette=list("Reds","Blues"), style = "cont", title = c("Mean High Risk Summer", "sd High Risk Summer")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Factor1: High Risk Exposures Summer - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = RBEH_SMR1, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor1: High Risk Exposures Summer') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Factor1: High Risk Exposures Summer - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(final.nsf, aes(x = RBEH_SMR1, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor1: High Risk Exposures Summer') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+\
+
+
+## Correlation between means and sds for Factor1: High Risk Exposures Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.RBEH_SMR1 <- round(cor(RBEH_SMR1$Wighted.mean_SMR1, RBEH_SMR1$Wighted.sd_SMR1),2)
+print(sprintf("The correlation between means and sds for Factor1: High Risk Exposures Summer is: %s", cor.RBEH_SMR1))
+```
+
+
+\
+
+## Anova for Factor1: High Risk Exposures Summer without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_SMR1 <- aov(RBEH_SMR1 ~ BNUName, data = final.nsf)
+summary(anova.RBEH_SMR1)
+```
+
+\
+
+## Anova for Factor1: High Risk Exposures Summer with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_SMR1 <- lm(RBEH_SMR1 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.RBEH_SMR1)
+```
+
+
+
+\
+
+
+# Factor2: Food & Trolley, Summer
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# RBEH_SMR2
+mean.RBEH_SMR2 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_SMR2), funs(Wighted.mean_SMR2 = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+
+sd.RBEH_SMR2 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_SMR2), funs(Wighted.sd_SMR2 = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+RBEH_SMR2 <- cbind(mean.RBEH_SMR2,sd.RBEH_SMR2)
+RBEH_SMR2 <- RBEH_SMR2[,-3]
+```
+
+\
+
+
+## Plot for Factor2: Food & Trolley, Summer (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR2 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_SMR2,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_SMR2,2))) +
+  geom_bar(stat="identity", fill="darkgoldenrod4") + ylab('Factor2: Food & Trolley, Summer (mean)') +
+  theme_bw() + ggtitle("Factor2: Food & Trolley, Summer for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for Factor2: Food & Trolley, Summer (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR2 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_SMR2,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_SMR2,2))) +
+  geom_bar(stat="identity", fill="cornsilk4") + ylab('Factor2: Food & Trolley, Summer (sd)') +
+  theme_bw() + ggtitle("Factor2: Food & Trolley, Summer for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Factor2: Food & Trolley, Summer
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR2.map <- merge(nbhd_geo, RBEH_SMR2, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(RBEH_SMR2.map) + tm_polygons(c('Wighted.mean_SMR2', 'Wighted.sd_SMR2'), palette=list("Oranges","Greens"), style = "cont", title = c("Mean Food & Trolley Summer", "sd Food & Trolley Summer")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Factor2: Food & Trolley, Summer - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = RBEH_SMR2, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor2: Food & Trolley, Summer') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Factor2: Food & Trolley, Summer - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(final.nsf, aes(x = RBEH_SMR2, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor2: Food & Trolley, Summer') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+
+\
+
+
+## Correlation between means and sds for Factor2: Food & Trolley, Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.RBEH_SMR2 <- round(cor(RBEH_SMR2$Wighted.mean_SMR2, RBEH_SMR2$Wighted.sd_SMR2),2)
+print(sprintf("The correlation between means and sds for Factor2: Food & Trolley, Summer is: %s", cor.RBEH_SMR2))
+```
+
+
+\
+
+## Anova for Factor2: Food & Trolley, Summer without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_SMR2 <- aov(RBEH_SMR2 ~ BNUName, data = final.nsf)
+summary(anova.RBEH_SMR2)
+```
+
+\
+
+## Anova for Factor2: Food & Trolley, Summer with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_SMR2 <- lm(RBEH_SMR2 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.RBEH_SMR2)
+```
+
+\
+
+
+
+# Factor3: Ordered Food & Groceries, Summer
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# RBEH_SMR3
+mean.RBEH_SMR3 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_SMR3), funs(Wighted.mean_SMR3 = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+
+sd.RBEH_SMR3 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_SMR3), funs(Wighted.sd_SMR3 = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+RBEH_SMR3 <- cbind(mean.RBEH_SMR3,sd.RBEH_SMR3)
+RBEH_SMR3 <- RBEH_SMR3[,-3]
+```
+
+\
+
+## Plot for Factor3: Ordered Food & Groceries, Summer (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR3 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_SMR3,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_SMR3,2))) +
+  geom_bar(stat="identity", fill="darkslategray") + ylab('Factor3: Ordered Food & Groceries, Summer (mean)') +
+  theme_bw() + ggtitle("Factor3: Ordered Food & Groceries, Summer for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+\
+
+
+## Plot for Factor3: Ordered Food & Groceries, Summer (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR3 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_SMR3,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_SMR3,2))) +
+  geom_bar(stat="identity", fill="ivory4") + ylab('Factor3: Ordered Food & Groceries, Summer (sd)') +
+  theme_bw() + ggtitle("Factor3: Ordered Food & Groceries, Summer for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8))  
+```
+
+
+\
+
+
+## Maps Factor3: Ordered Food & Groceries, Summer
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR3.map <- merge(nbhd_geo, RBEH_SMR3, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(RBEH_SMR3.map) + tm_polygons(c('Wighted.mean_SMR3', 'Wighted.sd_SMR3'), palette=list("Oranges","Greens"), style = "cont", title = c("Mean Ordered Food & Groceries Summer", "sd Ordered Food & Groceries Summer")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Factor3: Ordered Food & Groceries, Summer - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = RBEH_SMR3, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor3: Ordered Food & Groceries, Summer') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Factor3: Ordered Food & Groceries, Summer - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(final.nsf, aes(x = RBEH_SMR3, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor3: Ordered Food & Groceries, Summer') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+
+
+
+\
+
+## Correlation between means and sds for Factor3: Ordered Food & Groceries, Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.RBEH_SMR3 <- round(cor(RBEH_SMR3$Wighted.mean_SMR3, RBEH_SMR3$Wighted.sd_SMR3),2)
+print(sprintf("The correlation between means and sds for Factor3: Ordered Food & Groceries, Summer is: %s", cor.RBEH_SMR3))
+```
+
+
+\
+
+## Anova for Factor3: Ordered Food & Groceries, Summer without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_SMR3 <- aov(RBEH_SMR3 ~ BNUName, data = final.nsf)
+summary(anova.RBEH_SMR3)
+```
+
+\
+
+## Anova for Factor3: Ordered Food & Groceries, Summer with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_SMR3 <- lm(RBEH_SMR3 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.RBEH_SMR3)
+```
+
+\
+
+
+
+# Factor4: Exercise & Got Groceries, Summer
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# RBEH_SMR4
+mean.RBEH_SMR4 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_SMR4), funs(Wighted.mean_SMR4 = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+
+sd.RBEH_SMR4 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(RBEH_SMR4), funs(Wighted.sd_SMR4 = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+RBEH_SMR4 <- cbind(mean.RBEH_SMR4,sd.RBEH_SMR4)
+RBEH_SMR4 <- RBEH_SMR4[,-3]
+```
+
+
+
+## Plot for Factor4: Exercise & Got Groceries, Summer (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR4 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean_SMR4,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean_SMR4,2))) +
+  geom_bar(stat="identity", fill="deeppink4") + ylab('Factor4: Exercise & Got Groceries, Summer (mean)') +
+  theme_bw() + ggtitle("Factor4: Factor4: Exercise & Got Groceries, Summer for each neighborhood (mean)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for Factor4: Exercise & Got Groceries, Summer (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+RBEH_SMR4 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd_SMR4,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd_SMR4,2))) +
+  geom_bar(stat="identity", fill="lavenderblush4") + ylab('Factor4: Exercise & Got Groceries, Summer (sd)') + theme_bw() + ggtitle("Factor4: Exercise & Got Groceries, Summer for each neighborhood (sd)") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Factor4: Exercise & Got Groceries, Summer
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+RBEH_SMR4.map <- merge(nbhd_geo, RBEH_SMR4, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(RBEH_SMR4.map) + tm_polygons(c('Wighted.mean_SMR4', 'Wighted.sd_SMR4'), palette=list("Reds","Greens"), style = "cont", title = c("Mean Exercise & Got Groceries Summer", "sdExercise & Got Groceries Summer")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Factor4: Exercise & Got Groceries, Summer - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = RBEH_SMR4, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor4: Exercise & Got Groceries, Summer') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Factor4: Exercise & Got Groceries, Summer - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(final.nsf, aes(x = RBEH_SMR4, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Factor4: Exercise & Got Groceries, Summer') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+
+
+\
+
+## Correlation between means and sds for Factor4: Exercise & Got Groceries, Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.RBEH_SMR4 <- round(cor(RBEH_SMR4$Wighted.mean_SMR4, RBEH_SMR4$Wighted.sd_SMR4),2)
+print(sprintf("The correlation between means and sds for Factor4: Exercise & Got Groceries, Summer is: %s", cor.RBEH_SMR4))
+```
+
+
+\
+
+## Anova for Factor4: Exercise & Got Groceries, Summer without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_SMR4 <- aov(RBEH_SMR4 ~ BNUName, data = final.nsf)
+summary(anova.RBEH_SMR4)
+```
+
+\
+
+## Anova for Factor4: Exercise & Got Groceries, Summer with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.RBEH_SMR4 <- lm(RBEH_SMR4 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.RBEH_SMR4)
+```
+
+
+\
+
+
+# Perceived Risk (risk3) ==> 4=large risk
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# Mean Risk Perception: (Q35-Q37, 4=large risk)
+mean.risk3 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(risk3), funs(Wighted.mean.Risk3 = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.risk3 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(risk3), funs(Wighted.sd.Risk3 = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+risk3 <- cbind(mean.risk3,sd.risk3 )
+risk3 <- risk3[,-3]
+```
+
+\
+
+## Plot for Perceived Risk (risk3) (Wighted mean)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+risk3 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean.Risk3,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean.Risk3,2))) +
+  geom_bar(stat="identity", fill="bisque4") + ylab('Perceived risk (Wighted mean)') +
+  theme_bw() + ggtitle("Perceived risk (Wighted mean) for each neighborhood") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+\
+
+## Plot for Perceived Risk (risk3) (Wighted sd)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+risk3 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd.Risk3,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd.Risk3,2))) +
+  geom_bar(stat="identity", fill="navy") + ylab('Perceived risk (Wighted sd)') +
+  theme_bw() + ggtitle("Perceived risk (Wighted sd) for each neighborhood") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Perceived Risk (risk3)
+
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+risk3.map <- merge(nbhd_geo, risk3, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(risk3.map) + tm_polygons(c('Wighted.mean.Risk3','Wighted.sd.Risk3'), palette=list("Reds","Blues"), style = "cont", title = c("Mean Perceived Risk", "sd Perceived Risk")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Perceived Risk - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = risk3, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Perceived Risk') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Perceived Risk - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(final.nsf, aes(x = risk3, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Perceived Risk') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+
+\
+
+## Correlation between means and sds for Perceived Risk
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.risk3 <- round(cor(risk3$Wighted.mean.Risk3, risk3$Wighted.sd.Risk3),2)
+print(sprintf("The correlation between means and sds for Perceived Risk is: %s", cor.risk3))
+```
+
+
+\
+
+## Anova for Perceived Risk without weights
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.risk3 <- aov(risk3 ~ BNUName, data = final.nsf)
+summary(anova.risk3)
+```
+
+
+
+\
+
+## Anova for Perceived Risk with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.2 <- lm(risk3 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.2)
+```
+
+
+\
+
+
+# Guideline Importance (guideimp4) ==> 4=extremely
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# Mean Importance of Guidelines Adherence: (Q30-Q33), 4=extremely
+mean.guide <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(guideimp4), funs(Wighted.mean.Guideimp = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.guide <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(guideimp4), funs(Wighted.sd.Guideimp = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+guide <- cbind(mean.guide,sd.guide)
+guide <- guide[,-3]
+```
+
+\
+
+## Plot for Guideline Importance (Wighted mean)
+
+
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+guide %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean.Guideimp ,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean.Guideimp,2))) +
+  geom_bar(stat="identity", fill="darkorange4") + ylab('Guideline Importance (Wighted mean)') +
+  theme_bw() + ggtitle("Guideline Importance (Wighted mean) for each neighborhood") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+\
+
+## Plot for Guideline Importance (Wighted sd)
+
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+guide %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd.Guideimp,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd.Guideimp,2))) +
+  geom_bar(stat="identity", fill="darksalmon") + ylab('Guideline Importance (Wighted sd)') +
+  theme_bw() + ggtitle("Guideline Importance (Wighted sd) for each neighborhood") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Guideline Importance
+
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+guide.map <- merge(nbhd_geo, guide, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(guide.map) + tm_polygons(c('Wighted.mean.Guideimp','Wighted.sd.Guideimp'), palette=list("Oranges","Purples"), style = "cont", title = c("Mean Guideline Importance", "sd Guideline Importance")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Guideline Importance - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = guideimp4, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Guideline Importance') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Guideline Importance - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(final.nsf, aes(x = guideimp4, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Guideline Importance') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+
+
+\
+
+
+## Correlation between means and sds for Guideline Importance
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.guide <- round(cor(guide$Wighted.mean.Guideimp, guide$Wighted.sd.Guideimp),2)
+print(sprintf("The correlation between means and sds for Guideline Importance is: %s", cor.guide))
+```
+
+
+\
+
+## Anova for Guideline Importance without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.guide <- aov(guideimp4 ~BNUName, data = final.nsf)
+summary(anova.guide)
+```
+
+\
+
+## Anova for Guideline Importance with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.2 <- lm(guideimp4 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.2)
+```
+
+
+
+\
+
+
+
+# Risk Behavior in April (riskapril)
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# riskapril
+mean.riskapril <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(riskapril), funs(Wighted.mean.riskapril = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.riskapril <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(riskapril), funs(Wighted.sd.riskapril = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+riskapril <- cbind(mean.riskapril,sd.riskapril)
+riskapril <- riskapril[,-3]
+```
+
+\
+
+## Plot for Risk Behavior in April (Wighted mean)
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+riskapril %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean.riskapril,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean.riskapril,2))) +
+  geom_bar(stat="identity", fill="deepskyblue3") + ylab('Risk Behavior (Wighted mean) in April') +
+  theme_bw() + ggtitle("Risk Behavior (Wighted mean) for each neighborhood in April") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+\
+
+## Plot for Risk Behavior in April (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+riskapril %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd.riskapril,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd.riskapril,2))) +
+  geom_bar(stat="identity", fill="cadetblue") + ylab('Risk Behavior (Wighted sd) in April') +
+  theme_bw() + ggtitle("Risk Behavior (Wighted sd) for each neighborhood in April") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Risk Behavior in April
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+riskapril.map <- merge(nbhd_geo, riskapril, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(riskapril.map) + tm_polygons(c('Wighted.mean.riskapril','Wighted.sd.riskapril'), palette=list("Greens","Blues"), style = "cont", title = c("Mean Risk Behavior in April", "sd Risk Behavior in April")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Risk Behavior in April - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = riskapril, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Risk Behavior in April') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Risk Behavior in April - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(final.nsf, aes(x = riskapril, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Risk Behavior in April') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+
+\
+
+
+
+## Correlation between means and sds for Risk Behavior in April
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.riskapril <- round(cor(riskapril$Wighted.mean.riskapril, riskapril$Wighted.sd.riskapril),2)
+print(sprintf("The correlation between means and sds for Risk Behavior in April is: %s", cor.riskapril))
+```
+
+
+\
+
+## Anova for Risk Behavior in April without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.riskapril <- aov(riskapril ~ BNUName, data = final.nsf)
+summary(anova.riskapril)
+```
+
+\
+
+## Anova for Risk Behavior in April with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.riskapril <- lm(riskapril ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.riskapril)
+```
+
+
+\
+
+
+# Risk Behavior in Summer (risklast7)
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+# risklast7
+mean.risklast7 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(risklast7), funs(Wighted.mean.risklast7 = weighted.mean(., MERNRWGT, na.rm=TRUE)))
+
+sd.risklast7 <- final.nsf %>%
+  group_by(BNUName) %>% 
+  summarise_at(vars(risklast7), funs(Wighted.sd.risklast7 = sqrt(Hmisc::wtd.var(., MERNRWGT, na.rm=TRUE))))
+
+risklast7 <- cbind(mean.risklast7,sd.risklast7)
+risklast7 <- risklast7[,-3]
+```
+
+\
+
+## Plot for Risk Behavior in Summer (Wighted mean)
+
+
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+risklast7 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.mean.risklast7,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.mean.risklast7,2))) +
+  geom_bar(stat="identity", fill="darkorchid4") + ylab('Risk Behavior in Summer (Wighted mean)') +
+  theme_bw() + ggtitle("Risk Behavior (Wighted mean) for each neighborhood in Summer") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+## Plot for Risk Behavior in Summer (Wighted sd)
+\
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+risklast7 %>%
+  mutate(BNUName = fct_reorder(BNUName, desc(round(Wighted.sd.risklast7,2)))) %>%
+  ggplot(aes(x=BNUName, y=round(Wighted.sd.risklast7,2))) +
+  geom_bar(stat="identity", fill="firebrick4") + ylab('Risk Behavior in Summer (Wighted sd)') +
+  theme_bw() + ggtitle("Risk Behavior (Wighted sd) for each neighborhood in Summer") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8)) 
+```
+
+
+\
+
+
+## Maps for Risk Behavior in Summer
+\
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results='hide', comment=""}
+nbhd_geo <- st_read(dsn="~/Desktop/Beacon_Nbhd/Beacon_Neighborhoods.shp")
+# Convert coordinate system
+nbhd_geo <- st_transform(nbhd_geo, "+proj=longlat +datum=NAD83 +no_defs")
+nbhd_geo$BNU_Name <- ifelse(nbhd_geo$BNU_Name == "Roxbury : Highland Park/ Sav-Mor/ Washington Park", "Roxbury", ifelse(nbhd_geo$BNU_Name == 'Dorchester Central:   Fields Corner; Bowdoin; Codman Square; Uphams Corner', "Dorch. Central", ifelse(nbhd_geo$BNU_Name == 'Jamaica Plain: Mission Hill', "J.P.: Mission Hill", ifelse(nbhd_geo$BNU_Name == "East Boston: Eagle Hill/ Harbor View", "East Boston: E.H.", ifelse(nbhd_geo$BNU_Name == "Central: North End", "Central N.E.", ifelse(nbhd_geo$BNU_Name == "North Dorchester:   Columbia Point", "Dorch. North", ifelse(nbhd_geo$BNU_Name == "East Boston: Central Maverick/ Jeffries Point", "East Boston", ifelse(nbhd_geo$BNU_Name == "Central: West End", "Central W.E.", ifelse(nbhd_geo$BNU_Name == "South Dorchester : Ashmont/Neponset", "Dorch. South", ifelse(nbhd_geo$BNU_Name == "Jamaica Plain: Jamaica/ Hyde Square/ Forest Hills", "J.P.", ifelse(nbhd_geo$BNU_Name == "Central: Chinatown/ Bay Village", "Central", ifelse(nbhd_geo$BNU_Name == 'Roxbury: Dudley/ Lower Roxbury', "Lower Roxbury", ifelse(nbhd_geo$BNU_Name == "Allston", "Allston", ifelse(nbhd_geo$BNU_Name == "Back Bay", "Back Bay", ifelse(nbhd_geo$BNU_Name == "Beacon Hill", "Beacon Hill", ifelse(nbhd_geo$BNU_Name == "Brighton", "Brighton", ifelse(nbhd_geo$BNU_Name == "Charlestown", "Charlestown", ifelse(nbhd_geo$BNU_Name == "Fenway/Kenmore", "Fenway/Kenmore", ifelse(nbhd_geo$BNU_Name == "Hyde Park", "Hyde Park", ifelse(nbhd_geo$BNU_Name == "Mattapan", "Mattapan", ifelse(nbhd_geo$BNU_Name == "Roslindale", "Roslindale", ifelse(nbhd_geo$BNU_Name == "Seaport", "Seaport", ifelse(nbhd_geo$BNU_Name == "South Boston", "South Boston", ifelse(nbhd_geo$BNU_Name == "South End", "South End", ifelse(nbhd_geo$BNU_Name == "West Roxbury", "West Roxbury", NA)))))))))))))))))))))))))
+```
+
+\
+
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+risklast7.map <- merge(nbhd_geo, risklast7, by.x = "BNU_Name", by.y = 'BNUName' ,all.x=TRUE)
+
+tmap_mode('view')
+tm_shape(risklast7.map) + tm_polygons(c('Wighted.mean.risklast7','Wighted.sd.risklast7'), palette=list("Purples","Oranges"), style = "cont", title = c("Mean Risk Behavior in Summer", "sd Risk Behavior in Summer")) + tm_style('col_blind') + tm_view(alpha = 0.85,view.legend.position = c("right", "bottom")) + tm_basemap(server = c('OpenStreetMap')) + tmap_options(show.messages = FALSE)
+```
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Risk Behavior in Summer - Count
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+ggplot(final.nsf, aes(x = risklast7, weights= MERNRWGT)) + geom_histogram(binwidth = 0.4) + theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Risk Behavior in Summer') +
+  ggtitle("Faceted histograms by neighborhood")
+```
+
+
+
+\
+
+## Faceted histograms by neighborhood (weighted) - Risk Behavior in Summer - Proportion
+\
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+
+ggplot(final.nsf, aes(x = risklast7, weights= MERNRWGT)) + geom_histogram(aes(y=..count../sum(..count..)))+ theme_bw() +
+  facet_wrap(~ BNUName) + xlab('Risk Behavior in Summer') + ylab("Proportion") + 
+  ggtitle("Faceted histograms by neighborhood-Proportion-weighted")
+
+```
+
+
+\
+
+## Correlation between means and sds for Risk Behavior in Summer
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+cor.risklast7 <- round(cor(risklast7$Wighted.mean.risklast7, risklast7$Wighted.sd.risklast7),2)
+print(sprintf("The correlation between means and sds for Risk Behavior in Summer is: %s", cor.risklast7))
+```
+
+
+\
+
+
+## Anova for Risk Behavior in Summer without weights
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.risklast7 <- aov(risklast7 ~ BNUName, data = final.nsf)
+summary(anova.risklast7)
+```
+
+\
+
+
+## Anova for Risk Behavior in Summer with weights (Merged Nonresponse Weights)
+\
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, comment=""}
+anova.risklast7 <- lm(risklast7 ~ BNUName, data = final.nsf, weights = MERNRWGT)
+anova(anova.risklast7)
+```
+
+\
+
